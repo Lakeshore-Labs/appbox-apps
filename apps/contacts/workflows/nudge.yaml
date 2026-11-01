@@ -1,0 +1,18 @@
+# One run per contact: two minutes without a note puts a nudge in the app naming the contact;
+# a note starts the quiet period again.
+states:
+  - name: new
+    on:
+      - {when: addContact, set: {contactId: "${{ addContact.result.id }}"}, then: quiet}
+      - {when: createContact, set: {contactId: "${{ createContact.result.id }}"}, then: quiet}
+  - name: quiet
+    on:
+      - {when: addNoteContact, then: quiet}
+      - {after: 2m, do: [{op: nudgeContact, with: {id: "${{ contactId }}"}, as: nudged}], then: nudgedState}
+  - name: nudgedState
+    on:
+      - {when: addNoteContact, then: quiet}
+      - {when: engine.error, then: quiet}
+  - {name: gone}
+on:
+  - {when: deleteContact, then: gone}

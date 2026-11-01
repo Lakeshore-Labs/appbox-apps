@@ -1,0 +1,13 @@
+# One run per posted notification: every 30 seconds it clears the notification if it is read
+# and older than 30 seconds, and ends once the notification is gone.
+states:
+  - name: posted
+    on:
+      - {when: postNotification, then: waiting}
+  - name: waiting
+    on:
+      - {after: 30s, do: [{op: clearIfRead, with: {notificationId: "${{ postNotification.result.id }}"}, as: cleared}]}
+      - {when: cleared, if: cleared.gone, then: gone}
+      - {when: cleared, then: waiting}
+      - {when: engine.error, then: waiting}
+  - name: gone

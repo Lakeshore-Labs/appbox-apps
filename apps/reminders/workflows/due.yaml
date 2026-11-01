@@ -1,0 +1,22 @@
+# One run per reminder: when it comes due its owner is told through Notifications. Snoozing,
+# finishing a repeating one or changing its time arms it again at its new due time; finishing
+# one that does not repeat, or deleting it, ends the run.
+states:
+  - name: new
+    on:
+      - {when: createReminder, set: {id: "${{ createReminder.result.id }}", due: "${{ createReminder.result.dueAt }}"}}
+  - name: waiting
+    on:
+      - {at: "${{ due }}", do: [{op: notifyReminder, with: {id: "${{ id }}"}, as: notified}], then: overdue}
+  - name: overdue
+    on:
+      - {when: engine.error, then: overdue}
+  - {name: finished}
+on:
+  - {when: due, then: waiting}
+  - {when: snoozeReminder, set: {due: "${{ snoozeReminder.result.dueAt }}"}}
+  - {when: completeReminder, if: "completeReminder.result.doneAt != null", then: finished}
+  - {when: completeReminder, set: {due: "${{ completeReminder.result.dueAt }}"}}
+  - {when: updateReminder, if: "updateReminder.result.doneAt != null", then: finished}
+  - {when: updateReminder, set: {due: "${{ updateReminder.result.dueAt }}"}}
+  - {when: deleteReminder, then: finished}

@@ -1,0 +1,57 @@
+{
+  "url": "/app/application/mcp",
+  "operations": [
+    {
+      "name": "listHosts",
+      "description": "Every app the actor may see that is served, each by its name, its title and its default host, as an app's host lists them.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "items": {
+              "properties": {
+                "icon": {
+                  "description": "Where its icon is drawn from, its icon.svg at its host with its version; absent when none.",
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "title": {
+                  "description": "The title of its spec, as deployed; empty while it is not.",
+                  "type": "string"
+                },
+                "url": {
+                  "description": "Its default host's origin with /.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "title",
+                "url"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,795 @@
+{
+  "url": "/app/assistant/mcp",
+  "operations": [
+    {
+      "name": "ask",
+      "description": "Asks the assistant in your chat with it and answers once its run ends, with what it said last, the images its calls showed and how the run ended; a run of the chat busy is superseded. A caller who leaves does not stop the run. An assistant hands part of your request to another you view this way, which runs as you with its own instructions, model and operations: its run is one deeper than the one asking, at most four below yours, and an ask of a chat busy with a run, its own among them, is refused.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {
+          "assistant": {
+            "type": "string"
+          },
+          "chat": {
+            "type": "string"
+          },
+          "message": {
+            "description": "What you say.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "runId": {
+            "description": "This ask's id, yours; one is made when absent.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assistant",
+          "chat",
+          "message"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "properties": {
+              "calls": {
+                "description": "The calls the run ended waiting on, when its outcome is waiting; else none.",
+                "items": {
+                  "properties": {
+                    "arguments": {
+                      "additionalProperties": true,
+                      "description": "What the model called it with.",
+                      "type": "object"
+                    },
+                    "id": {
+                      "description": "The call's id, which answer names.",
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "The tool called.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "arguments"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "chat": {
+                "type": "string"
+              },
+              "images": {
+                "description": "The images the run's calls made or showed, each at its file's content URL.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "outcome": {
+                "description": "How a run ended: waiting when it ended on calls of your browser's waiting on you, such as askUser, which answer answers.",
+                "enum": [
+                  "answered",
+                  "failed",
+                  "stopped",
+                  "waiting"
+                ],
+                "type": "string"
+              },
+              "text": {
+                "description": "What the assistant said last in the run, or the result of a call after it.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "chat",
+              "outcome",
+              "text",
+              "images",
+              "calls"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": false,
+        "destructive": true,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "createAssistant",
+      "description": "Creates one assistant.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {
+          "harness": {
+            "enum": [
+              "",
+              "pi",
+              "claude",
+              "codex"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "instructions": {
+            "type": "string"
+          },
+          "model": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "operations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "instructions",
+          "name"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "properties": {
+              "harness": {
+                "enum": [
+                  "",
+                  "pi",
+                  "claude",
+                  "codex"
+                ],
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "instructions": {
+                "type": "string"
+              },
+              "model": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "operations": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "role": {
+                "description": "The actor's role on the instance, written by the gate on a list and a get.",
+                "enum": [
+                  "viewer",
+                  "editor"
+                ],
+                "readOnly": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "instructions",
+              "operations",
+              "model",
+              "harness"
+            ],
+            "title": "assistant",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": false,
+        "destructive": true,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "getAssistant",
+      "description": "The assistant with this id.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "properties": {
+              "harness": {
+                "enum": [
+                  "",
+                  "pi",
+                  "claude",
+                  "codex"
+                ],
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "instructions": {
+                "type": "string"
+              },
+              "model": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "operations": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "role": {
+                "description": "The actor's role on the instance, written by the gate on a list and a get.",
+                "enum": [
+                  "viewer",
+                  "editor"
+                ],
+                "readOnly": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "instructions",
+              "operations",
+              "model",
+              "harness"
+            ],
+            "title": "assistant",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "getChat",
+      "description": "Your chat, its messages first to last as AG-UI's, each assistant message's stop reason in its metadata, the operations its turns are offered, how its last run ended, busy while one runs, and its versions, the chats of its tree of forks. A chat of another app than app names, when it names one, is no such chat.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {
+          "app": {
+            "type": "string"
+          },
+          "chat": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "chat"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "allOf": [
+              {
+                "properties": {
+                  "assistant": {
+                    "type": "string"
+                  },
+                  "created": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "entry": {
+                    "description": "The message of the parent it was forked at.",
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "member": {
+                    "description": "Whose chat it is.",
+                    "type": "string"
+                  },
+                  "parent": {
+                    "description": "The chat it was forked from.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "description": "Its title, else its first message's first line.",
+                    "type": "string"
+                  },
+                  "updated": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "assistant",
+                  "member",
+                  "title",
+                  "created",
+                  "updated"
+                ],
+                "type": "object"
+              },
+              {
+                "properties": {
+                  "calls": {
+                    "description": "The calls the run ended waiting on, when its outcome is waiting; else none.",
+                    "items": {
+                      "properties": {
+                        "arguments": {
+                          "additionalProperties": true,
+                          "description": "What the model called it with.",
+                          "type": "object"
+                        },
+                        "id": {
+                          "description": "The call's id, which answer names.",
+                          "type": "string"
+                        },
+                        "name": {
+                          "description": "The tool called.",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "arguments"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "forks": {
+                    "description": "Its versions: the chats of its tree of forks, its root and each forked from one of them, each with its parent and entry, the oldest first.",
+                    "items": {
+                      "properties": {
+                        "assistant": {
+                          "type": "string"
+                        },
+                        "created": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "entry": {
+                          "description": "The message of the parent it was forked at.",
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string"
+                        },
+                        "member": {
+                          "description": "Whose chat it is.",
+                          "type": "string"
+                        },
+                        "parent": {
+                          "description": "The chat it was forked from.",
+                          "type": "string"
+                        },
+                        "title": {
+                          "description": "Its title, else its first message's first line.",
+                          "type": "string"
+                        },
+                        "updated": {
+                          "format": "date-time",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "assistant",
+                        "member",
+                        "title",
+                        "created",
+                        "updated"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "messages": {
+                    "description": "Its messages as AG-UI's.",
+                    "items": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "outcome": {
+                    "description": "How its last run ended, as Outcome says, busy while one runs; none before its first.",
+                    "enum": [
+                      "busy",
+                      "answered",
+                      "failed",
+                      "stopped",
+                      "waiting"
+                    ],
+                    "type": "string"
+                  },
+                  "tools": {
+                    "description": "The operations its turns are offered.",
+                    "items": {
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "title"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "messages",
+                  "tools",
+                  "calls",
+                  "forks"
+                ],
+                "type": "object"
+              }
+            ]
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "listAssistants",
+      "description": "Lists the assistants.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "items": {
+              "properties": {
+                "harness": {
+                  "enum": [
+                    "",
+                    "pi",
+                    "claude",
+                    "codex"
+                  ],
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "instructions": {
+                  "type": "string"
+                },
+                "model": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "name": {
+                  "type": "string"
+                },
+                "operations": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "role": {
+                  "description": "The actor's role on the instance, written by the gate on a list and a get.",
+                  "enum": [
+                    "viewer",
+                    "editor"
+                  ],
+                  "readOnly": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "instructions",
+                "operations",
+                "model",
+                "harness"
+              ],
+              "title": "assistant",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "openChat",
+      "description": "Opens your chat with an assistant, the chat named if you name one, made the first time; a new chat when you name none. The app named is the chat's, the one it is opened in; none, the organization's. With from and entry, a new chat forked from your chat from at its message entry, holding what came before it, its app from's. A chat that is another member's, another assistant's, or another app's when you name one, is no such chat; an app you cannot open is no such app; an entry not in from is no such message.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {
+          "app": {
+            "description": "The name of the app the chat is opened in.",
+            "type": "string"
+          },
+          "assistant": {
+            "type": "string"
+          },
+          "chat": {
+            "description": "The chat's id: 1 to 128 letters, digits, - and _.",
+            "type": "string"
+          },
+          "entry": {
+            "description": "The message of from the fork is made at, your message's id.",
+            "type": "string"
+          },
+          "from": {
+            "description": "Your chat the new one is forked from.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assistant"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "properties": {
+              "assistant": {
+                "type": "string"
+              },
+              "created": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "entry": {
+                "description": "The message of the parent it was forked at.",
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "member": {
+                "description": "Whose chat it is.",
+                "type": "string"
+              },
+              "parent": {
+                "description": "The chat it was forked from.",
+                "type": "string"
+              },
+              "title": {
+                "description": "Its title, else its first message's first line.",
+                "type": "string"
+              },
+              "updated": {
+                "format": "date-time",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "assistant",
+              "member",
+              "title",
+              "created",
+              "updated"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": false,
+        "destructive": true,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "updateAssistant",
+      "description": "Changes the assistant with this id.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {
+          "harness": {
+            "enum": [
+              "",
+              "pi",
+              "claude",
+              "codex"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "instructions": {
+            "type": "string"
+          },
+          "model": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "operations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "properties": {
+              "harness": {
+                "enum": [
+                  "",
+                  "pi",
+                  "claude",
+                  "codex"
+                ],
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "instructions": {
+                "type": "string"
+              },
+              "model": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "operations": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "role": {
+                "description": "The actor's role on the instance, written by the gate on a list and a get.",
+                "enum": [
+                  "viewer",
+                  "editor"
+                ],
+                "readOnly": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "instructions",
+              "operations",
+              "model",
+              "harness"
+            ],
+            "title": "assistant",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": false,
+        "destructive": true,
+        "idempotent": false,
+        "openWorld": true
+      }
+    }
+  ]
+}

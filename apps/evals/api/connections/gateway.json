@@ -1,0 +1,272 @@
+{
+  "url": "/app/llmgateway/mcp",
+  "operations": [
+    {
+      "name": "listModelDetails",
+      "description": "Enabled models on which the caller holds viewer, with their effective upstream metadata. Checks every model's instance access in one batch.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "items": {
+              "properties": {
+                "info": {
+                  "properties": {
+                    "chatSupport": {
+                      "enum": [
+                        "supported",
+                        "unsupported",
+                        "unknown"
+                      ],
+                      "type": "string"
+                    },
+                    "contextLength": {
+                      "type": "integer"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "Exact upstream identifier accepted for inference",
+                      "type": "string"
+                    },
+                    "inputModalities": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "maxOutputTokens": {
+                      "type": "integer"
+                    },
+                    "mode": {
+                      "description": "The task the model is listed under: the mode of Bifrosts first catalog pricing row for it, in the order completion, chat, responses, embedding and the rest, or what the providers listing implies; empty means unknown.",
+                      "type": "string"
+                    },
+                    "name": {
+                      "description": "Human label when known; otherwise the upstream identifier.",
+                      "type": "string"
+                    },
+                    "outputModalities": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "rates": {
+                      "description": "Known USD rates; an empty array means unknown pricing.",
+                      "items": {
+                        "properties": {
+                          "amount": {
+                            "description": "US dollars per unit.",
+                            "format": "double",
+                            "minimum": 0,
+                            "type": "number"
+                          },
+                          "name": {
+                            "description": "What is charged",
+                            "type": "string"
+                          },
+                          "source": {
+                            "description": "Where this rate came from",
+                            "type": "string"
+                          },
+                          "unit": {
+                            "description": "Actual rate unit",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "amount",
+                          "unit",
+                          "source"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "sources": {
+                      "description": "Evidence for each effective field; empty means unknown source.",
+                      "properties": {
+                        "chatSupport": {
+                          "enum": [
+                            "",
+                            "catalog",
+                            "provider"
+                          ],
+                          "type": "string"
+                        },
+                        "contextLength": {
+                          "enum": [
+                            "",
+                            "catalog",
+                            "provider"
+                          ],
+                          "type": "string"
+                        },
+                        "inputModalities": {
+                          "enum": [
+                            "",
+                            "catalog",
+                            "provider"
+                          ],
+                          "type": "string"
+                        },
+                        "maxOutputTokens": {
+                          "enum": [
+                            "",
+                            "catalog",
+                            "provider"
+                          ],
+                          "type": "string"
+                        },
+                        "mode": {
+                          "enum": [
+                            "",
+                            "catalog",
+                            "provider"
+                          ],
+                          "type": "string"
+                        },
+                        "outputModalities": {
+                          "enum": [
+                            "",
+                            "catalog",
+                            "provider"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "mode",
+                        "chatSupport",
+                        "inputModalities",
+                        "outputModalities",
+                        "contextLength",
+                        "maxOutputTokens"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "chatSupport",
+                    "mode",
+                    "inputModalities",
+                    "outputModalities",
+                    "rates",
+                    "sources"
+                  ],
+                  "type": "object"
+                },
+                "model": {
+                  "description": "An enabled model: its unique exposed name, optional upstream name (the exposed name when unset), optional canonical base-model identifier for deployment routing and metadata, its provider, and optional manual prices in dollars per million tokens. Empty prices use catalog pricing where known.",
+                  "properties": {
+                    "cachedInputUsdPerMtok": {
+                      "format": "double",
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "canonical": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "inputUsdPerMtok": {
+                      "format": "double",
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "outputUsdPerMtok": {
+                      "format": "double",
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "provider": {
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ],
+                      "type": "object"
+                    },
+                    "role": {
+                      "description": "The actor's role on the instance, written by the gate on a list and a get.",
+                      "enum": [
+                        "viewer",
+                        "editor"
+                      ],
+                      "readOnly": true,
+                      "type": "string"
+                    },
+                    "upstream": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "provider",
+                    "inputUsdPerMtok",
+                    "cachedInputUsdPerMtok",
+                    "outputUsdPerMtok",
+                    "upstream",
+                    "canonical"
+                  ],
+                  "title": "models",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "model",
+                "info"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    }
+  ]
+}

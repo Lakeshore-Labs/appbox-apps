@@ -1,0 +1,115 @@
+{
+  "url": "/app/notifications/mcp",
+  "operations": [
+    {
+      "name": "postNotification",
+      "description": "PostNotification posts a notification into one member's inbox; every app calls this to tell a member something.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {
+          "app": {
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "app",
+          "link",
+          "message",
+          "recipient"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "One message to one member of the organization, posted by an app.",
+            "properties": {
+              "id": {
+                "format": "int64",
+                "type": "integer"
+              },
+              "link": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "postedAt": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "postedBy": {
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "type": "object"
+              },
+              "readAt": {
+                "format": "date-time",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "recipient": {
+                "type": "string"
+              },
+              "role": {
+                "description": "The actor's role on the instance, written by the gate on a list and a get.",
+                "enum": [
+                  "viewer",
+                  "editor"
+                ],
+                "readOnly": true,
+                "type": "string"
+              },
+              "sourceApp": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "recipient",
+              "message",
+              "sourceApp",
+              "link",
+              "postedAt",
+              "readAt",
+              "postedBy"
+            ],
+            "title": "notification",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": false,
+        "destructive": true,
+        "idempotent": false,
+        "openWorld": true
+      }
+    }
+  ]
+}

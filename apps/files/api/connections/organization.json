@@ -1,0 +1,59 @@
+{
+  "url": "/app/organization/mcp",
+  "operations": [
+    {
+      "name": "listMembers",
+      "description": "The organization's members.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "items": {
+              "properties": {
+                "email": {
+                  "description": "The user's email; empty when it is not known.",
+                  "type": "string"
+                },
+                "role": {
+                  "description": "A member's role on the organization: editor, viewer, or guest for neither.",
+                  "enum": [
+                    "editor",
+                    "viewer",
+                    "guest"
+                  ],
+                  "type": "string"
+                },
+                "user": {
+                  "description": "The user's id.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "user",
+                "role",
+                "email"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+# Each case, from the moment it is written: wait for the next night, run it if it is set to
+# run nightly (runNightlyEvalCase does nothing when it is not), and wait for the next. A case
+# deleted ends its run.
+states:
+  - name: written
+    on:
+      - {when: createEvalCase, then: scheduling}
+  - name: scheduling
+    on:
+      - {do: [{op: nextNightEvalCase, with: {id: "${{ createEvalCase.result.id }}"}, as: slot}]}
+      - {when: slot, then: sleeping}
+      - {when: engine.error, then: stopped}
+  - name: sleeping
+    on:
+      - {at: "${{ slot.at }}", do: [{op: runNightlyEvalCase, with: {id: "${{ createEvalCase.result.id }}"}, as: night}], then: running}
+  - name: running
+    on:
+      - {when: night, then: scheduling}
+      - {when: engine.error, then: scheduling}
+  - {name: stopped}
+  - {name: deleted}
+on:
+  - {when: deleteEvalCase, then: deleted}

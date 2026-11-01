@@ -1,0 +1,36 @@
+# Follows a submitted order: reminds the approver it waits on every 2 minutes, and their backup
+# from 5 minutes on, until it is approved, rejected, closed or cancelled.
+states:
+  - name: draft
+    on:
+      - when: submitPurchaseOrder
+        set: {status: "${{ submitPurchaseOrder.result.status }}"}
+        then: routing
+  - name: routing
+    on:
+      - {when: status, if: "status == 'pending_manager' || status == 'pending_finance'", then: awaiting}
+      - {when: status, if: "status == 'rejected'", then: draft}
+      - {when: status, if: "status == 'approved'", then: approved}
+      - {when: status, if: "status == 'closed'", then: closed}
+      - {when: status, if: "status == 'cancelled'", then: cancelled}
+  - name: awaiting
+    on:
+      - when: approvePurchaseOrder
+        set: {status: "${{ approvePurchaseOrder.result.status }}"}
+        then: routing
+      - when: rejectPurchaseOrder
+        set: {status: "${{ rejectPurchaseOrder.result.status }}"}
+        then: routing
+      - after: 5m
+        do: [{op: escalatePurchaseOrder, with: {id: "${{ submitPurchaseOrder.id }}"}}]
+    states:
+      - name: reminding
+        on:
+          - after: 2m
+            do: [{op: remindPurchaseOrder, with: {id: "${{ submitPurchaseOrder.id }}"}}]
+            then: reminding
+  - {name: approved}
+  - {name: closed}
+  - {name: cancelled}
+on:
+  - {when: cancelPurchaseOrder, then: cancelled}

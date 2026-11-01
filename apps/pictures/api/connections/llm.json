@@ -1,0 +1,70 @@
+{
+  "url": "/app/llmgateway/mcp",
+  "operations": [
+    {
+      "name": "generateImage",
+      "description": "Generates one image from the prompt on a model whose output modalities hold image, the one the organization has when none is named, and answers its bytes, base64. May incur provider charges.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {
+          "model": {
+            "description": "The model's name, one the deployment exposes whose output modalities hold image; the organization's one image model when omitted.",
+            "type": "string"
+          },
+          "prompt": {
+            "description": "What to draw.",
+            "minLength": 1,
+            "type": "string"
+          },
+          "size": {
+            "description": "The image's size as the provider takes it, such as 1024x1024; the provider's default when omitted.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "properties": {
+              "content": {
+                "contentEncoding": "base64",
+                "description": "The bytes, base64.",
+                "maxLength": 34952536,
+                "type": "string"
+              },
+              "contentType": {
+                "description": "The image's media type, image/png unless the provider's output format says otherwise.",
+                "type": "string"
+              },
+              "model": {
+                "description": "The model that made it.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "model",
+              "contentType",
+              "content"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": false,
+        "destructive": true,
+        "idempotent": false,
+        "openWorld": true
+      }
+    }
+  ]
+}

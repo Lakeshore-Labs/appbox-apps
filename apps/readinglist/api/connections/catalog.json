@@ -1,0 +1,51 @@
+{
+  "url": "/app/bookcatalog/mcp",
+  "operations": [
+    {
+      "name": "lookup",
+      "description": "Lookup answers the author of the book with this title.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "properties": {
+              "author": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "title",
+              "author"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    }
+  ]
+}
