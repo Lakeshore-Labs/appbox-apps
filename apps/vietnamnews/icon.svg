@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Main Background Gradient: Deep Vietnam Red to Dark Crimson Maroon -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DE2828"/>
+      <stop offset="50%" stop-color="#B71C1C"/>
+      <stop offset="100%" stop-color="#7A0000"/>
+    </linearGradient>
+
+    <!-- Gold Accent Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE066"/>
+      <stop offset="50%" stop-color="#FFC107"/>
+      <stop offset="100%" stop-color="#FF8F00"/>
+    </linearGradient>
+
+    <!-- Paper Sheet Gradient -->
+    <linearGradient id="paperGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F3F4F6"/>
+    </linearGradient>
+
+    <linearGradient id="redAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E53935"/>
+      <stop offset="100%" stop-color="#C62828"/>
+    </linearGradient>
+
+    <!-- Drop Shadows -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#3A0000" flood-opacity="0.5"/>
+    </filter>
+
+    <filter id="starGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="#FFC107" flood-opacity="0.6"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="18" flood-color="#DA251D" flood-opacity="0.3"/>
+    </filter>
+
+    <filter id="paperShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Base App Icon Tile -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+
+  <!-- Subtle Dong Son Drum / Sunburst Concentric Circles in Background -->
+  <g opacity="0.12" stroke="#FFFFFF" stroke-width="2" fill="none">
+    <circle cx="256" cy="256" r="220" stroke-dasharray="8 8"/>
+    <circle cx="256" cy="256" r="180"/>
+    <circle cx="256" cy="256" r="140" stroke-dasharray="4 6"/>
+    <circle cx="256" cy="256" r="100"/>
+  </g>
+
+  <!-- Central Newspaper / Morning News Paper Sheet -->
+  <g filter="url(#paperShadow)">
+    <!-- Back Newspaper Page (Slightly Angled & Shifted) -->
+    <rect x="146" y="128" width="220" height="280" rx="16" fill="#E2E8F0" transform="rotate(-6 256 268)"/>
+    
+    <!-- Main Newspaper Page -->
+    <rect x="136" y="136" width="240" height="290" rx="16" fill="url(#paperGrad)"/>
+    
+    <!-- Header Banner on Newspaper -->
+    <path d="M 136 152 C 136 143.163 143.163 136 152 136 L 360 136 C 368.837 136 376 143.163 376 152 L 376 196 L 136 196 Z" fill="url(#redAccent)"/>
+
+    <!-- Gold Accent Line under Header -->
+    <rect x="136" y="196" width="240" height="6" fill="url(#goldGrad)"/>
+
+    <!-- Newspaper Headline Bars (Simulated Text / Columns) -->
+    <!-- Top Bold Headline -->
+    <rect x="160" y="222" width="140" height="14" rx="4" fill="#1E293B"/>
+    <rect x="312" y="222" width="40" height="14" rx="4" fill="url(#goldGrad)"/>
+
+    <!-- Article Columns -->
+    <!-- Column 1 -->
+    <rect x="160" y="250" width="88" height="8" rx="3" fill="#64748B"/>
+    <rect x="160" y="266" width="88" height="6" rx="3" fill="#94A3B8"/>
+    <rect x="160" y="278" width="76" height="6" rx="3" fill="#94A3B8"/>
+    <rect x="160" y="290" width="82" height="6" rx="3" fill="#94A3B8"/>
+    <rect x="160" y="302" width="60" height="6" rx="3" fill="#94A3B8"/>
+
+    <!-- Column 2 (Image Placeholder & Text) -->
+    <rect x="264" y="250" width="88" height="48" rx="6" fill="#CBD5E1"/>
+    <!-- Small Star inside Image placeholder -->
+    <polygon points="308,262 311,270 319,270 312,275 315,283 308,278 301,283 304,275 297,270 305,270" fill="url(#goldGrad)"/>
+
+    <rect x="264" y="306" width="88" height="6" rx="3" fill="#94A3B8"/>
+    <rect x="264" y="318" width="70" height="6" rx="3" fill="#94A3B8"/>
+
+    <!-- Bottom Daily Badge / Live Wave Bar -->
+    <rect x="160" y="340" width="192" height="2" fill="#E2E8F0"/>
+    
+    <!-- Red LIVE / DAILY Dot & Bar -->
+    <circle cx="168" cy="362" r="5" fill="#E53935"/>
+    <rect x="180" y="358" width="70" height="8" rx="4" fill="#1E293B"/>
+    <rect x="280" y="358" width="72" height="8" rx="4" fill="#94A3B8"/>
+  </g>
+
+  <!-- Prominent Vietnam Golden Star Badge Crest at top-center of Newspaper -->
+  <g filter="url(#starGlow)">
+    <!-- Golden Star Badge Base Circle -->
+    <circle cx="256" cy="120" r="48" fill="#B71C1C" stroke="url(#goldGrad)" stroke-width="4"/>
+    
+    <!-- Iconic 5-pointed Vietnam Golden Star -->
+    <polygon points="
+      256,88
+      263.5,110.2
+      286.4,110.2
+      267.9,123.8
+      275.0,146.0
+      256,132.2
+      237.0,146.0
+      244.1,123.8
+      225.6,110.2
+      248.5,110.2
+    " fill="url(#goldGrad)"/>
+    
+    <!-- 3D Star Highlight facet -->
+    <polygon points="
+      256,88
+      256,120
+      263.5,110.2
+    " fill="#FFE57F" opacity="0.6"/>
+    <polygon points="
+      286.4,110.2
+      256,120
+      267.9,123.8
+    " fill="#FFE57F" opacity="0.6"/>
+    <polygon points="
+      275.0,146.0
+      256,120
+      256,132.2
+    " fill="#FFE57F" opacity="0.6"/>
+    <polygon points="
+      237.0,146.0
+      256,120
+      244.1,123.8
+    " fill="#FFE57F" opacity="0.6"/>
+    <polygon points="
+      225.6,110.2
+      256,120
+      248.5,110.2
+    " fill="#FFE57F" opacity="0.6"/>
+  </g>
+
+  <!-- Modern Decorative Ribbon / Banner "VIETNAM NEWS" at bottom -->
+  <g filter="url(#shadow)">
+    <path d="M 120 420 L 392 420 L 376 456 L 136 456 Z" fill="url(#goldGrad)"/>
+    <!-- Fold details -->
+    <path d="M 120 420 L 136 456 L 136 420 Z" fill="#D97706"/>
+    <path d="M 392 420 L 376 456 L 376 420 Z" fill="#D97706"/>
+    
+    <!-- Text -->
+    <text x="256" y="445" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="900" fill="#7A0000" text-anchor="middle" letter-spacing="4">VIETNAM NEWS</text>
+  </g>
+</svg>
