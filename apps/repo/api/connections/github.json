@@ -1,0 +1,524 @@
+{
+  "url": "https://api.githubcopilot.com/mcp/x/all",
+  "operations": [
+    {
+      "name": "get_file_contents",
+      "title": "Get file or directory contents",
+      "description": "Get the contents of a file or directory from a GitHub repository",
+      "input": {
+        "properties": {
+          "fields": {
+            "description": "Subset of fields to return for each entry when the path is a directory. If omitted, all fields are returned. Ignored when the path is a single file. Use this to reduce response size when listing directories and you only need specific fields, e.g. just 'name' and 'type'.",
+            "items": {
+              "enum": [
+                "type",
+                "name",
+                "path",
+                "size",
+                "sha",
+                "url",
+                "git_url",
+                "html_url",
+                "download_url"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "owner": {
+            "description": "Repository owner (username or organization)",
+            "type": "string",
+            "x-mcp-header": "owner"
+          },
+          "path": {
+            "default": "/",
+            "description": "Path to file/directory",
+            "type": "string"
+          },
+          "ref": {
+            "description": "Accepts optional git refs such as `refs/tags/{tag}`, `refs/heads/{branch}` or `refs/pull/{pr_number}/head`",
+            "type": "string"
+          },
+          "repo": {
+            "description": "Repository name",
+            "type": "string",
+            "x-mcp-header": "repo"
+          },
+          "sha": {
+            "description": "Accepts optional commit SHA. If specified, it will be used instead of ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "download_url": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "git_url": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "html_url": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "name": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "path": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "sha": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "size": {
+                  "description": "File size in bytes.",
+                  "type": [
+                    "null",
+                    "integer"
+                  ]
+                },
+                "submodule_git_url": {
+                  "description": "Git remote URL for a submodule.",
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "target": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "type": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "url": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                }
+              },
+              "type": [
+                "null",
+                "object"
+              ]
+            },
+            "type": "array"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "content": {
+                "items": {
+                  "oneOf": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "text": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "text",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "text"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "resource": {
+                          "additionalProperties": false,
+                          "oneOf": [
+                            {
+                              "not": {
+                                "required": [
+                                  "blob"
+                                ]
+                              },
+                              "required": [
+                                "text"
+                              ]
+                            },
+                            {
+                              "not": {
+                                "required": [
+                                  "text"
+                                ]
+                              },
+                              "required": [
+                                "blob"
+                              ]
+                            },
+                            {
+                              "not": {
+                                "anyOf": [
+                                  {
+                                    "required": [
+                                      "text"
+                                    ]
+                                  },
+                                  {
+                                    "required": [
+                                      "blob"
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "properties": {
+                            "blob": {
+                              "description": "Base64-encoded file bytes.",
+                              "type": [
+                                "null",
+                                "string"
+                              ]
+                            },
+                            "mimeType": {
+                              "type": "string"
+                            },
+                            "text": {
+                              "type": [
+                                "null",
+                                "string"
+                              ]
+                            },
+                            "uri": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "uri"
+                          ],
+                          "type": "object"
+                        },
+                        "type": {
+                          "const": "resource",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "resource"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "size": {
+                          "description": "File size in bytes.",
+                          "type": [
+                            "null",
+                            "integer"
+                          ]
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "resource_link",
+                          "type": "string"
+                        },
+                        "uri": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "uri",
+                        "name"
+                      ],
+                      "type": "object"
+                    }
+                  ]
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "content"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "get_repository_tree",
+      "title": "Get repository tree",
+      "description": "Get the tree structure (files and directories) of a GitHub repository at a specific ref or SHA",
+      "input": {
+        "properties": {
+          "owner": {
+            "description": "Repository owner (username or organization)",
+            "type": "string",
+            "x-mcp-header": "owner"
+          },
+          "path_filter": {
+            "description": "Optional path prefix to filter the tree results (e.g., 'src/' to only show files in the src directory)",
+            "type": "string"
+          },
+          "recursive": {
+            "default": false,
+            "description": "Setting this parameter to true returns the objects or subtrees referenced by the tree. Default is false",
+            "type": "boolean"
+          },
+          "repo": {
+            "description": "Repository name",
+            "type": "string",
+            "x-mcp-header": "repo"
+          },
+          "tree_sha": {
+            "description": "The SHA1 value or ref (branch or tag) name of the tree. Defaults to the repository's default branch",
+            "type": "string"
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "recursive": {
+            "type": "boolean"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "sha": {
+            "type": "string"
+          },
+          "tree": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "mode": {
+                  "description": "Git file mode in octal; empty if absent in the API response.",
+                  "enum": [
+                    "100644",
+                    "100755",
+                    "040000",
+                    "160000",
+                    "120000",
+                    ""
+                  ],
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "sha": {
+                  "type": "string"
+                },
+                "size": {
+                  "description": "Blob size in bytes, when available.",
+                  "type": "integer"
+                },
+                "type": {
+                  "description": "Git object type; empty if absent in the API response.",
+                  "enum": [
+                    "blob",
+                    "tree",
+                    "commit",
+                    ""
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path",
+                "type",
+                "mode",
+                "sha"
+              ],
+              "type": "object"
+            },
+            "type": [
+              "null",
+              "array"
+            ]
+          },
+          "tree_sha": {
+            "type": "string"
+          },
+          "truncated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "sha",
+          "truncated",
+          "tree",
+          "tree_sha",
+          "owner",
+          "repo",
+          "recursive",
+          "count"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "push_files",
+      "title": "Push files to repository",
+      "description": "Push multiple files to a GitHub repository in a single commit",
+      "input": {
+        "properties": {
+          "branch": {
+            "description": "Branch to push to",
+            "type": "string"
+          },
+          "files": {
+            "description": "Array of file objects to push, each object with path (string) and content (string)",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "content": {
+                  "description": "file content",
+                  "type": "string"
+                },
+                "path": {
+                  "description": "path to the file",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "message": {
+            "description": "Commit message",
+            "type": "string"
+          },
+          "owner": {
+            "description": "Repository owner",
+            "type": "string",
+            "x-mcp-header": "owner"
+          },
+          "repo": {
+            "description": "Repository name",
+            "type": "string",
+            "x-mcp-header": "repo"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "branch",
+          "files",
+          "message"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "object": {
+            "additionalProperties": false,
+            "properties": {
+              "sha": {
+                "type": "string"
+              },
+              "type": {
+                "description": "Git object kind: commit, tag, tree, or blob.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "sha"
+            ],
+            "type": "object"
+          },
+          "ref": {
+            "description": "Fully qualified reference, such as refs/heads/main.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ref",
+          "object"
+        ],
+        "type": [
+          "null",
+          "object"
+        ]
+      },
+      "hints": {
+        "readOnly": false,
+        "destructive": true,
+        "idempotent": false,
+        "openWorld": true
+      }
+    }
+  ]
+}

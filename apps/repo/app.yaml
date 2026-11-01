@@ -1,0 +1,3 @@
+name: repo
+title: App Store
+description: Installs and refreshes this organization's apps from directories in GitHub repositories.

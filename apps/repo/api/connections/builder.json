@@ -1,0 +1,595 @@
+{
+  "url": "/app/builder/mcp",
+  "operations": [
+    {
+      "name": "exportApp",
+      "description": "The source of a retained build, its files, as installApp takes them. Without build, reads the published build; an app never published is refused. A named build must belong to this app and is never replaced by the current build.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {
+          "app": {
+            "description": "An app's name.",
+            "pattern": "^[a-z0-9]+$",
+            "type": "string"
+          },
+          "build": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "An app's name and its authored files.",
+            "properties": {
+              "files": {
+                "items": {
+                  "description": "One file of an app's stored source, with its body: an authored file, or a binding bindConnection wrote, api/connections/\u003calias\u003e.json, filetype connection and named \u003calias\u003e.json; the Builder refuses a name its filetype does not admit, naming it.",
+                  "properties": {
+                    "content": {
+                      "type": "string"
+                    },
+                    "filetype": {
+                      "description": "The filetype of a file of an app's stored source, an authored file's or connection, a binding bindConnection wrote.",
+                      "enum": [
+                        "app",
+                        "schema",
+                        "query",
+                        "operation",
+                        "page",
+                        "component",
+                        "workflow",
+                        "theme",
+                        "icon",
+                        "connection"
+                      ],
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "filetype",
+                    "name",
+                    "content"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "files"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "installApp",
+      "description": "Creates the draft of an app called the body's name from an exported source, builds it as writeFiles does and answers the write as it ended, published or failed with its diagnostics; a name with a draft or installed is refused. A failed write leaves the draft.",
+      "input": {
+        "additionalProperties": false,
+        "description": "An app's name and its authored files.",
+        "properties": {
+          "files": {
+            "items": {
+              "description": "One file of an app's stored source, with its body: an authored file, or a binding bindConnection wrote, api/connections/\u003calias\u003e.json, filetype connection and named \u003calias\u003e.json; the Builder refuses a name its filetype does not admit, naming it.",
+              "properties": {
+                "content": {
+                  "type": "string"
+                },
+                "filetype": {
+                  "description": "The filetype of a file of an app's stored source, an authored file's or connection, a binding bindConnection wrote.",
+                  "enum": [
+                    "app",
+                    "schema",
+                    "query",
+                    "operation",
+                    "page",
+                    "component",
+                    "workflow",
+                    "theme",
+                    "icon",
+                    "connection"
+                  ],
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "filetype",
+                "name",
+                "content"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "files",
+          "name"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "One write of an app's draft as it ended: published as a build of the app, or failed with its diagnostics or the builder's error.",
+            "properties": {
+              "build": {
+                "description": "The hash of the build published; absent when failed.",
+                "type": "string"
+              },
+              "diagnostics": {
+                "description": "What refused the files, each at a file of the app where the tool names one; empty when green.",
+                "items": {
+                  "description": "One refusal of the build: its source, app, schema, spec, sqlc, oapigen, workflow, go or web; the file's filetype and name, empty when the tool names no file of the app; its line and column; the message, which names the fix where the build knows it.",
+                  "properties": {
+                    "column": {
+                      "type": "integer"
+                    },
+                    "filetype": {
+                      "type": "string"
+                    },
+                    "line": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "source",
+                    "filetype",
+                    "name",
+                    "line",
+                    "column",
+                    "message"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "error": {
+                "description": "The builder's own failure, a missing compiler, beside empty diagnostics.",
+                "type": "string"
+              },
+              "plan": {
+                "description": "The plan from the app's live schema to its schema file; empty when they agree.",
+                "items": {
+                  "description": "One statement of the plan, whether it loses data, and its hazards.",
+                  "properties": {
+                    "destructive": {
+                      "type": "boolean"
+                    },
+                    "hazards": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "DELETES_DATA, ACQUIRES_ACCESS_EXCLUSIVE_LOCK or another of pg-schema-diff's.",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "message"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "sql": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "sql",
+                    "destructive",
+                    "hazards"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "state": {
+                "enum": [
+                  "published",
+                  "failed"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "state",
+              "diagnostics",
+              "plan"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": false,
+        "destructive": true,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "listApps",
+      "description": "Lists the apps with a draft, by name.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "items": {
+              "description": "An app with a draft.",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "listFiles",
+      "description": "The app's files by filetype and name, no bodies.",
+      "input": {
+        "additionalProperties": false,
+        "properties": {
+          "app": {
+            "description": "An app's name.",
+            "pattern": "^[a-z0-9]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "items": {
+              "description": "A file by its filetype and name.",
+              "properties": {
+                "filetype": {
+                  "description": "app: app.yaml, one per app; its name, the app's, its title, its description, what the app tells an MCP client, optional, and its currency, an ISO 4217 code its appbox.money columns are in.\nschema: schema.sql, one per app; every kind's DDL as it should stand; the publish plans the change. A table with a primary key is a kind, book the kind Book, plural books unless its comment begins @plural \u003cword\u003e, the rest of its comment its description. A column `appbox.file` holds a member's upload, its id; the kind's form, list and page take and show the file.\nquery: name.sql, sqlc queries an operation uses, such as -- name: Name :one, :many, :exec.\noperation: name.go, package operations; each operation an exported method, `func (App) Name(ctx context.Context[, in struct{...}]) (Out, error)` or of a kind's row, `func (b *Book) Finish(ctx context.Context) error`, answering (Out, error), error, or on App's value iter.Seq2[Out, error], a stream. A value receiver is a read, GET, writing nothing; a pointer receiver a write, POST. App's is on the app at /api/\u003cid\u003e, its id the name with its first word lowered; a row's on that row, at /api/\u003cplural\u003e/{id}/\u003cname\u003e, its id the name and the kind's: it changes the row in memory, and the platform saves what changed, refused 409 when the row changed since it was read. An operation that acts on one row is a method of that row, and a workflow run it starts is about that row, as `func (o *PurchaseOrder) Submit(ctx context.Context) error` starts one about that order; a method of App is about the app. A \u003cKind\u003eId field of an input is a reference. An error it returns, errors.New(\"…\"), is refused 400 with its text; one of its queries keeps its own: a violated constraint 409, no rows 404, a trigger's RAISE EXCEPTION 400 with its text, any other 500, its text not told. The caller is sdk.Actor(ctx), user:\u003cid\u003e, the text appbox.current_actor() answers and a column of type appbox.actor holds. The doc comment's first paragraph is the operation's description. Its queries are Query(ctx); its kinds' types and the queries' are the package's. Its Go may import the standard library, github.com/Lakeshore-Labs/appbox/sdk and the app's own packages, connections/\u003calias\u003e among them. What it wants atomic it runs in a transaction of its own, `tx, err := sdk.DB(ctx).BeginTx(ctx, nil)`, `defer tx.Rollback()`, its queries over `New(tx)`, then `tx.Commit()`; in a write it is a savepoint of the write's step, and it ends before any call through connections/\u003calias\u003e, which is refused inside it.\npage: Name.tsx, a component named after its file, drawn with the platform's components and the generated client. Once published, look at it: snapshotPage at 1280 and at 390, assistant_viewFile on each, and fix what you see.\ncomponent: name.tsx, a reusable React component, hook or helper at web/src/components/name.tsx, imported as @/components/name. Never creates a page or navigation entry. It is built, exported and installed with the app.\nworkflow: name.yaml, a document in the workflow grammar, the resource workflows://grammar, naming the app's operations bare and a binding's \u003calias\u003e.\u003cop\u003e.\ntheme: theme.css, one per app, optional; the app's own style tokens, :root { --primary: …; } and its dark tokens in .dark { … }, what tweakcn exports; drawn at the app's own host after the default palette in place of the organization's theme, the one its brand derives. Custom properties in those two blocks alone, no url().\nicon: icon.svg, one per app, optional; the image the app is drawn with, in its tile, as its page's favicon and in its manifest: an SVG document, served at the app's own host; the icon the organization set through Applications wins over it.\ngenerated: a file the published build generated, named by its path, read with getFile and never written.\n",
+                  "enum": [
+                    "app",
+                    "schema",
+                    "query",
+                    "operation",
+                    "page",
+                    "component",
+                    "workflow",
+                    "theme",
+                    "icon",
+                    "generated"
+                  ],
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "filetype",
+                "name"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": true,
+        "destructive": false,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
+      "name": "writeFiles",
+      "description": "Read the resource builder://guide before the first write. Writes a set of files of the app's draft and removes others, all at once, builds it and answers the write: published when green, else its diagnostics by file and line, and what is declared and not yet written. A write builds the whole draft, so a change across files, a rename among them, is one write naming each file it touches. A second write of an app while one runs is refused. A write that publishes a page is not done until you have looked at the page: application_listHosts for the app's URL, snapshotPage on the page's address at 1280 and again at 390, assistant_viewFile on each file it answers; fix what the pictures show and write again, then look again.",
+      "input": {
+        "additionalProperties": false,
+        "description": "A write names at least one file, in files or in delete.",
+        "not": {
+          "properties": {
+            "delete": {
+              "maxItems": 0
+            },
+            "files": {
+              "maxItems": 0
+            }
+          }
+        },
+        "properties": {
+          "app": {
+            "description": "An app's name.",
+            "pattern": "^[a-z0-9]+$",
+            "type": "string"
+          },
+          "delete": {
+            "description": "Each removed, an authored file or a binding by its alias; one that is not there is nothing to remove.",
+            "items": {
+              "description": "A file a write removes, an authored file or a binding by its alias; one that is not there is nothing to remove.",
+              "properties": {
+                "filetype": {
+                  "description": "The filetype of a file of an app's stored source, an authored file's or connection, a binding bindConnection wrote.",
+                  "enum": [
+                    "app",
+                    "schema",
+                    "query",
+                    "operation",
+                    "page",
+                    "component",
+                    "workflow",
+                    "theme",
+                    "icon",
+                    "connection"
+                  ],
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "filetype",
+                "name"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "destructive": {
+            "description": "Lets a plan that loses data run, a dropped table or column; false when absent.",
+            "type": "boolean"
+          },
+          "files": {
+            "description": "Each created or replaced, after delete; one named twice is written as last named; a file not named is unchanged.",
+            "items": {
+              "allOf": [
+                {
+                  "description": "A file the author writes, by its filetype and a name its filetype admits: a fixed name, app.yaml, schema.sql, theme.css or icon.svg, or a plain name, letters, digits, _, . and -, with the filetype's suffix and without .gen.; the Builder refuses one its filetype does not admit, naming it.",
+                  "properties": {
+                    "filetype": {
+                      "description": "The filetype of a file the author writes.",
+                      "enum": [
+                        "app",
+                        "schema",
+                        "query",
+                        "operation",
+                        "page",
+                        "component",
+                        "workflow",
+                        "theme",
+                        "icon"
+                      ],
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "filetype",
+                    "name"
+                  ],
+                  "type": "object"
+                }
+              ],
+              "description": "One file the author writes, with its body.",
+              "properties": {
+                "content": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "content"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "app"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "One write of an app's draft as it ended: published as a build of the app, or failed with its diagnostics or the builder's error.",
+            "properties": {
+              "build": {
+                "description": "The hash of the build published; absent when failed.",
+                "type": "string"
+              },
+              "diagnostics": {
+                "description": "What refused the files, each at a file of the app where the tool names one; empty when green.",
+                "items": {
+                  "description": "One refusal of the build: its source, app, schema, spec, sqlc, oapigen, workflow, go or web; the file's filetype and name, empty when the tool names no file of the app; its line and column; the message, which names the fix where the build knows it.",
+                  "properties": {
+                    "column": {
+                      "type": "integer"
+                    },
+                    "filetype": {
+                      "type": "string"
+                    },
+                    "line": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "source",
+                    "filetype",
+                    "name",
+                    "line",
+                    "column",
+                    "message"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "error": {
+                "description": "The builder's own failure, a missing compiler, beside empty diagnostics.",
+                "type": "string"
+              },
+              "plan": {
+                "description": "The plan from the app's live schema to its schema file; empty when they agree.",
+                "items": {
+                  "description": "One statement of the plan, whether it loses data, and its hazards.",
+                  "properties": {
+                    "destructive": {
+                      "type": "boolean"
+                    },
+                    "hazards": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "description": "DELETES_DATA, ACQUIRES_ACCESS_EXCLUSIVE_LOCK or another of pg-schema-diff's.",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "message"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "sql": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "sql",
+                    "destructive",
+                    "hazards"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "state": {
+                "enum": [
+                  "published",
+                  "failed"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "state",
+              "diagnostics",
+              "plan"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "hints": {
+        "readOnly": false,
+        "destructive": true,
+        "idempotent": false,
+        "openWorld": true
+      }
+    }
+  ]
+}
