@@ -259,7 +259,7 @@
       }
     },
     {
-      "name": "listApps",
+      "name": "listDrafts",
       "description": "Lists the apps with a draft, by name.",
       "input": {
         "additionalProperties": false,

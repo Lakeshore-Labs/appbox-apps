@@ -2,6 +2,139 @@
   "url": "https://api.githubcopilot.com/mcp/x/all",
   "operations": [
     {
+      "name": "delete_file",
+      "title": "Delete file",
+      "description": "Delete a file from a GitHub repository",
+      "input": {
+        "properties": {
+          "branch": {
+            "description": "Branch to delete the file from",
+            "type": "string"
+          },
+          "message": {
+            "description": "Commit message",
+            "type": "string"
+          },
+          "owner": {
+            "description": "Repository owner (username or organization)",
+            "type": "string",
+            "x-mcp-header": "owner"
+          },
+          "path": {
+            "description": "Path to the file to delete",
+            "type": "string"
+          },
+          "repo": {
+            "description": "Repository name",
+            "type": "string",
+            "x-mcp-header": "repo"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "path",
+          "message",
+          "branch"
+        ],
+        "type": "object"
+      },
+      "output": {
+        "additionalProperties": false,
+        "properties": {
+          "commit": {
+            "additionalProperties": false,
+            "properties": {
+              "author": {
+                "additionalProperties": false,
+                "properties": {
+                  "date": {
+                    "description": "Commit timestamp in RFC3339 format.",
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "type": [
+                  "null",
+                  "object"
+                ]
+              },
+              "committer": {
+                "additionalProperties": false,
+                "properties": {
+                  "date": {
+                    "description": "Commit timestamp in RFC3339 format.",
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "type": [
+                  "null",
+                  "object"
+                ]
+              },
+              "html_url": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "parents": {
+                "description": "Parent commit SHAs in Git parent order.",
+                "items": {
+                  "type": "string"
+                },
+                "type": [
+                  "null",
+                  "array"
+                ]
+              },
+              "sha": {
+                "type": "string"
+              },
+              "tree_sha": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "sha"
+            ],
+            "type": [
+              "null",
+              "object"
+            ]
+          },
+          "content": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "commit",
+          "content"
+        ],
+        "type": [
+          "null",
+          "object"
+        ]
+      },
+      "hints": {
+        "readOnly": false,
+        "destructive": true,
+        "idempotent": false,
+        "openWorld": true
+      }
+    },
+    {
       "name": "get_file_contents",
       "title": "Get file or directory contents",
       "description": "Get the contents of a file or directory from a GitHub repository",

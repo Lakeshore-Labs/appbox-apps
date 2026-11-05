@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Lakeshore-Labs/appbox/apps/appstore/connections/builder"
-	"github.com/Lakeshore-Labs/appbox/apps/appstore/connections/github"
+	"github.com/Lakeshore-Labs/appbox/apps/repo/connections/builder"
+	"github.com/Lakeshore-Labs/appbox/apps/repo/connections/github"
 )
 
 // Sync refreshes the store: every directory under the repository's path holding an app.yaml, at the branch's head, read from GitHub as the member, built and published through the Builder, the app installed when the Builder holds no draft of it, else written. One app's failure is kept as its result and the others go on.
@@ -38,7 +38,7 @@ func (r *Repository) Sync(ctx context.Context) error {
 			apps[dir] = append(apps[dir], rel)
 		}
 	}
-	drafted, err := builder.ListApps(ctx, builder.ListAppsIn{})
+	drafted, err := builder.ListDrafts(ctx, builder.ListDraftsIn{})
 	if err != nil {
 		return err
 	}
@@ -241,7 +241,7 @@ func appName(files []file) string {
 }
 
 // hasDraft is whether the Builder lists a draft called name.
-func hasDraft(listed builder.ListAppsOut, name string) bool {
+func hasDraft(listed builder.ListDraftsOut, name string) bool {
 	for _, a := range listed.Result {
 		if a.Name == name {
 			return true
